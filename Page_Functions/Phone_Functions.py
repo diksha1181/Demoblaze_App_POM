@@ -20,21 +20,25 @@ class PhoneFunctions(PhoneObjects):
             time.sleep(1)
 
         
-        def open_phone1(self):
-            self.wait.until(EC.element_to_be_clickable(self.phone1)).click()
+        def open_phone(self, index):
+            phones = [self.phone1, self.phone2, self.phone3, self.phone4, self.phone5]
+            self.wait.until(EC.element_to_be_clickable(phones[index-1])).click()
             time.sleep(1)
-           
 
         def cart(self):
             self.wait.until(EC.element_to_be_clickable(self.atc)).click()
             time.sleep(1)
-            
-           
+
+
         def verify(self):
             self.wait.until(EC.alert_is_present())
             alert= self.driver.switch_to.alert
             print(alert.text)
             alert.accept()
+
+        def back_to_phones(self):
+            self.open_home()
+            self.open_phones()
 
 
 

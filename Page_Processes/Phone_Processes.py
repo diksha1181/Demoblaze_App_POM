@@ -9,6 +9,10 @@ class PhoneProcess:
     def run_process(self):
         self.phone.open_home()
         self.phone.open_phones()
-        self.phone.open_phone1()
-        self.phone.cart()
-        self.phone.verify()
+        for i in range(1, 6):
+            self.phone.open_phone(i)
+            self.phone.cart()
+            self.phone.verify()
+            if i < 5:
+                self.phone.back_to_phones()
+                
