@@ -1,5 +1,5 @@
 from Page_Functions.Login_Functions import LoginFunctions
-from Data.Login_Data import LoginData
+from Data.Login_Data import loginpagemother
 
 class LoginProcess:
 
@@ -7,7 +7,7 @@ class LoginProcess:
         self.login = login
 
     def run_process(self):
-        data = LoginData()
+        data = loginpagemother()
         self.login.open_login()
         self.login.enter_username(data.app_username)
         self.login.enter_password(data.app_password)

@@ -1,5 +1,5 @@
 from Page_Functions.Signup_Functions import SignupFunctions
-from Data.Signup_Data import SignupData
+from Data.Signup_Data import signuppagemother
 
 class SignupProcess:
 
@@ -7,7 +7,7 @@ class SignupProcess:
         self.signup = signup
 
     def run_process(self):
-        data = SignupData()
+        data = signuppagemother()
         self.signup.open_signup()
         self.signup.enter_username(data.app_username)
         self.signup.enter_password(data.app_password)
