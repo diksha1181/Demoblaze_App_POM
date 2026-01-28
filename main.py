@@ -1,4 +1,4 @@
-from Libraries.libraries import ImportLibraries
+from Libraries.libraries import Import_libraries
 from Data.Config_Data import ConfigData
 from Page_Functions.Login_Functions import LoginFunctions
 from Page_Functions.Signup_Functions import SignupFunctions
@@ -21,7 +21,7 @@ from Page_Processes.Logout_Pocesses import LogoutProcess
 
 
 data = ConfigData()
-driver = ImportLibraries.initialize_driver()
+driver = Import_libraries.get_driver()
 driver.get(data.BASE_URL)
 
 
