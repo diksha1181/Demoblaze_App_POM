@@ -42,5 +42,4 @@ services:
 
 networks:
   demoblaze-network:
-    driver : bridge
-    
+    external: true

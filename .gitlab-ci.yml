@@ -5,20 +5,30 @@ stages:
 
 e2e-tests:
   stage: test
-  image: python:3.10
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
   variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
     SELENIUM_HEADLESS: "1"
-  before_script:
-    - pip install --upgrade pip
-    - pip install -r requirements.txt
   script:
-    - pytest -v
+    - apk add --no-cache bash dos2unix
+    - echo "USERNAME_DEMO=${USERNAME_DEMO}" >> .env.example
+    - echo "PASSWORD_DEMO=${PASSWORD_DEMO}" >> .env.example
+    - echo "CREDIT_CARD_NUMBER=${CREDIT_CARD_NUMBER}" >> .env.example
+    - cp .env.example .env
+    - dos2unix run_tests_with_novnc.sh
+    - chmod +x run_tests_with_novnc.sh
+    - docker network create demoblaze-network || true
+    - bash ./run_tests_with_novnc.sh
   artifacts:
     when: always
     paths:
       - allure-results/
       - screenshots/
-    allow_failure: true
+      - report.html
+      - assets/
 
 
 allure-report:
@@ -45,7 +55,7 @@ pages:
   needs:
     - allure-report
   script:
-    - mkdir -p public
+    - mkdir public
     - cp -r allure-report/* public/
   artifacts:
     paths:
