@@ -1,26 +1,40 @@
 #!/bin/bash
+set -e
 
-# Stop any running containers
 echo "Stopping any running containers..."
-docker compose down --remove-orphans
+docker compose down --remove-orphans || true
 
-# Start the Chrome container
-echo "Starting Chrome container..."
-docker compose up -d chrome
+# Detect CI environment
+if [ "$CI" = "true" ]; then
+  echo "CI environment detected"
+  echo "Running tests in headless mode (no noVNC)"
 
-# Wait for Chrome to be ready
-echo "Waiting for Chrome to be ready..."
-sleep 5
+  # Start only required services
+  docker compose up -d chrome
 
-# Open the noVNC viewer in the default browser with auto-connect parameters
-echo "Opening noVNC viewer in browser with auto-connect..."
-xdg-open "http://localhost:7900/?autoconnect=true&reconnect=true&resize=scale&password=" || open "http://localhost:7900/?autoconnect=true&reconnect=true&resize=scale&password=" || start "http://localhost:7900/?autoconnect=true&reconnect=true&resize=scale&password="
+  echo "Waiting for Chrome to be ready..."
+  sleep 5
 
-# Wait for browser to open
-echo "Waiting for browser to open..."
-sleep 3
+  echo "Running tests (CI mode)..."
+  docker compose run --rm selenium-tests
 
-# Run the tests
-echo "Running tests..."
-echo "NOTE: You will need to manually interact with the Google login page when it appears."
-docker compose run --rm selenium-tests
+else
+  echo "Local environment detected"
+  echo "Starting Chrome with noVNC support..."
+
+  docker compose up -d chrome
+
+  echo "Waiting for Chrome to be ready..."
+  sleep 5
+
+  echo "Opening noVNC viewer in browser..."
+  xdg-open "http://localhost:7900/?autoconnect=true&reconnect=true&resize=scale&password=" \
+    || open "http://localhost:7900/?autoconnect=true&reconnect=true&resize=scale&password=" \
+    || start "http://localhost:7900/?autoconnect=true&reconnect=true&resize=scale&password="
+
+  sleep 3
+
+  echo "Running tests (LOCAL mode)..."
+  echo "NOTE: Manual interaction may be required."
+  docker compose run --rm selenium-tests
+fi
